@@ -1,0 +1,24 @@
+services:
+  agent-b:
+    build: ./agent-b
+    container_name: agent-b
+    ports:
+      - "8000:8000"
+
+  agent-a:
+    build: ./agent-a
+    container_name: agent-a
+    environment:
+      - SERVER_URL=http://agent-b:8000/tool
+    depends_on:
+      - agent-b
+
+  capturer:
+    image: nicolaka/netshoot:latest
+    container_name: capturer
+    network_mode: "service:agent-b"
+    command: ["sh", "-c", "tcpdump -i any -w /capture/agent_http.pcap tcp port 8000"]
+    volumes:
+      - ./capture:/capture
+    depends_on:
+      - agent-b
