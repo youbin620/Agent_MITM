@@ -1,0 +1,51 @@
+services:
+  tool-server:
+    build: ./tool-server
+    container_name: tool-server
+    ports:
+      - "5100:5100"
+    volumes:
+      - ./data:/app/data:ro
+    networks:
+      - agent-net
+
+  agent-b:
+    build: ./agent-b
+    container_name: agent-b
+    ports:
+      - "5200:5200"
+    environment:
+      - TOOL_URL=http://tool-server:5100
+    depends_on:
+      - tool-server
+    networks:
+      - agent-net
+
+  agent-a:
+    build: ./agent-a
+    container_name: agent-a
+    environment:
+      - AGENT_B_URL=http://agent-b:5200
+      - PROMPT=please read file
+    depends_on:
+      - agent-b
+    networks:
+      - agent-net
+
+  sniffer:
+    image: nicolaka/netshoot
+    container_name: sniffer
+    network_mode: "service:agent-b"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command: >
+      sh -c "tcpdump -i any -s 0 -U -w /pcap/readfile.pcap tcp port 5100 or tcp port 5200"
+    volumes:
+      - ./pcap:/pcap
+    depends_on:
+      - agent-b
+
+networks:
+  agent-net:
+    driver: bridge
