@@ -72,7 +72,7 @@ PortSwigger에서 제공하는 **웹 보안 테스트 도구 모음**
     - Request / Response 탭에서 메소드, URL, 헤더, 바디(JSON payload)를 상세히 볼 수 있음
 
 #### Repeater
-Repeater는 말 그대로 **“요청을 반복해서 보낼 수 있는 도구”**다.
+Repeater는 말 그대로 “요청을 반복해서 보낼 수 있는 도구”다.
 - 역할: HTTP History에서 마음에 드는 요청 하나를 Send to Repeater
 - Repeater 탭에서: URL, 헤더, 바디(JSON)를 자유롭게 수정
     - “Send” 버튼을 눌러 서버에 재전송
